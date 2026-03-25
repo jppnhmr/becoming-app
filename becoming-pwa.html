@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#6366f1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Becoming</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--bg:#f5f5f7;--card:#fff;--text:#1a1a1a;--muted:#888;--border:#e5e5e5;--accent:#6366f1;--accent-bg:#eef2ff;--accent2:#818cf8;--danger:#ef4444;--shadow:0 1px 3px rgba(0,0,0,.08);--green:#22c55e;--yellow:#f59e0b;--red:#ef4444}
+@media(prefers-color-scheme:dark){:root{--bg:#0a0a0a;--card:#161618;--text:#e8e8ea;--muted:#777;--border:#2a2a2c;--accent:#818cf8;--accent-bg:#1e1b4b;--accent2:#a5b4fc;--shadow:0 1px 3px rgba(0,0,0,.3)}}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;min-height:100dvh;overflow-x:hidden;padding-bottom:68px}
+.page{max-width:480px;margin:0 auto;padding:0 16px}
+.card{background:var(--card);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow);border:1px solid var(--border)}
+.header{padding:20px 0 12px;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:22px;font-weight:800;display:flex;align-items:center;gap:8px}
+.subtitle{font-size:12px;color:var(--muted);margin-top:2px}
+.btn{border:none;border-radius:12px;font-weight:700;cursor:pointer;transition:transform .1s,opacity .15s}
+.btn:active{transform:scale(.97)}
+.btn-primary{width:100%;padding:15px;font-size:16px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;letter-spacing:.3px}
+.btn-primary:disabled{opacity:.4}
+.btn-sm{padding:6px 14px;font-size:12px;background:var(--card);color:var(--text);border:1px solid var(--border)}
+.nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--card);border-top:1px solid var(--border);z-index:100;padding-bottom:env(safe-area-inset-bottom)}
+.nav button{flex:1;padding:8px 0 6px;border:none;background:none;font-size:10px;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;transition:color .15s}
+.nav button.active{color:var(--accent);font-weight:700}
+.nav button .icon{font-size:18px;line-height:1}
+input[type=text],input[type=number]{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--border);font-size:15px;background:var(--card);color:var(--text);outline:none;transition:border-color .15s}
+input[type=text]:focus{border-color:var(--accent)}
+.range-wrap{margin-bottom:18px}
+.range-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.range-label{font-weight:600;font-size:14px}
+.range-value{font-weight:800;font-size:22px;line-height:1;min-width:30px;text-align:right}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:3px;background:var(--border);outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 6px rgba(99,102,241,.3)}
+.range-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:4px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.tag{padding:5px 12px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:transparent;color:var(--muted);font-weight:400}
+.tag.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:600}
+.stat-row{display:flex;justify-content:center;gap:36px;padding:8px 0}
+.stat{text-align:center}
+.stat-val{font-size:30px;font-weight:800;line-height:1.1}
+.stat-label{font-size:11px;color:var(--muted);margin-top:2px}
+.entry{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.entry-main{flex:1;min-width:0}
+.entry-activity{font-weight:600;font-size:14px;margin-bottom:3px}
+.entry-time{font-size:11px;color:var(--muted)}
+.entry-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.entry-tags span{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--accent-bg);color:var(--accent);font-weight:500}
+.entry-scores{display:flex;gap:14px;align-items:center;flex-shrink:0}
+.score{text-align:center}
+.score-val{font-size:20px;font-weight:800;line-height:1}
+.score-label{font-size:9px;color:var(--muted)}
+.del-btn{background:none;border:none;color:var(--muted);font-size:16px;cursor:pointer;padding:4px;opacity:.5;transition:opacity .15s}
+.del-btn:hover{opacity:1;color:var(--danger)}
+.day-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin:16px 0 6px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-name{font-size:13px;font-weight:500;min-width:70px}
+.bar-bg{flex:1;height:6px;border-radius:3px;background:var(--border)}
+.bar-fill{height:6px;border-radius:3px;transition:width .4s}
+.bar-count{font-size:12px;color:var(--muted);min-width:20px;text-align:right}
+.interval-btns{display:flex;gap:8px}
+.interval-btn{flex:1;padding:10px;border-radius:10px;font-size:13px;cursor:pointer;transition:all .15s;border:1.5px solid var(--border);background:transparent;color:var(--text);font-weight:400}
+.interval-btn.active{border-color:var(--accent);background:var(--accent-bg);color:var(--accent);font-weight:700}
+.settings-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.settings-tag{display:inline-flex;align-items:center;gap:3px;font-size:12px;padding:4px 10px;border-radius:10px;background:var(--accent-bg);color:var(--accent)}
+.settings-tag button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:13px;padding:0;line-height:1}
+.add-row{display:flex;gap:8px}
+.add-row input{flex:1}
+.add-row button{padding:8px 16px;border-radius:10px;border:none;background:var(--accent);color:#fff;font-size:14px;font-weight:700;cursor:pointer}
+.empty{text-align:center;color:var(--muted);padding:40px 0;font-size:14px}
+.back-row{display:flex;align-items:center;gap:12px;margin-bottom:16px;padding-top:16px}
+.back-btn{background:none;border:none;font-size:22px;cursor:pointer;color:var(--text);padding:0;line-height:1}
+.section-title{font-size:18px;font-weight:700}
+.notif-status{font-size:11px;color:var(--muted);margin-top:6px}
+.danger-btn{margin-top:10px;padding:9px 16px;border-radius:10px;border:1px solid var(--danger);background:transparent;color:var(--danger);font-size:12px;cursor:pointer}
+
+/* Insights */
+.insight-header{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.week-grid{display:flex;gap:4px;align-items:flex-end;height:120px;margin-bottom:4px}
+.week-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%}
+.week-bars{flex:1;width:100%;display:flex;gap:2px;align-items:flex-end}
+.week-bar{flex:1;border-radius:3px 3px 0 0;min-height:2px;transition:height .4s}
+.week-day-label{font-size:10px;color:var(--muted);font-weight:600}
+.week-val{font-size:9px;color:var(--muted);font-weight:500}
+.legend{display:flex;gap:16px;justify-content:center;margin-top:8px;margin-bottom:4px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted)}
+.legend-dot{width:8px;height:8px;border-radius:2px}
+.ring-container{display:flex;justify-content:center;padding:12px 0}
+.tag-insight-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.tag-insight-name{font-size:13px;font-weight:600;min-width:72px}
+.tag-insight-bar-bg{flex:1;height:8px;border-radius:4px;background:var(--border);overflow:hidden}
+.tag-insight-bar{height:100%;border-radius:4px;transition:width .4s}
+.tag-insight-meta{font-size:11px;color:var(--muted);min-width:80px;text-align:right}
+.tag-align{font-size:11px;margin-top:2px}
+.streak-row{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:8px 0}
+.streak-dot{width:18px;height:18px;border-radius:4px;border:1px solid var(--border)}
+.insight-big{font-size:40px;font-weight:800;line-height:1}
+.insight-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.insight-duo{display:flex;gap:16px}
+.insight-duo>div{flex:1;text-align:center;padding:12px 0}
+.trend-arrow{font-size:14px;margin-left:4px}
+</style>
+</head>
+<body>
+
+<div class="page" id="app"></div>
+
+<nav class="nav" id="nav">
+  <button data-view="home" class="active"><span class="icon">◉</span>Home</button>
+  <button data-view="checkin"><span class="icon">✦</span>Check In</button>
+  <button data-view="insights"><span class="icon">◐</span>Insights</button>
+  <button data-view="history"><span class="icon">☰</span>History</button>
+  <button data-view="settings"><span class="icon">⚙</span>Settings</button>
+</nav>
+
+<script>
+const DB_ENTRIES="becoming_entries";
+const DB_SETTINGS="becoming_settings";
+const DEFAULT_TAGS=["work","creative","social","rest","exercise","learning","chores","music","gaming","reading"];
+
+let entries=JSON.parse(localStorage.getItem(DB_ENTRIES)||"[]");
+let settings=JSON.parse(localStorage.getItem(DB_SETTINGS)||"null")||{tags:DEFAULT_TAGS,intervalHours:2};
+let currentView="home";
+let form={activity:"",mood:5,alignment:5,tags:[]};
+let notifTimer=null;
+
+const save=()=>localStorage.setItem(DB_ENTRIES,JSON.stringify(entries));
+const saveS=()=>localStorage.setItem(DB_SETTINGS,JSON.stringify(settings));
+const mc=v=>v<=3?"var(--red)":v<=6?"var(--yellow)":"var(--green)";
+const mcRaw=v=>v<=3?"#ef4444":v<=6?"#f59e0b":"#22c55e";
+const fmtTime=iso=>new Date(iso).toLocaleTimeString("en-GB",{hour:"2-digit",minute:"2-digit"});
+
+function dayLabel(iso){
+  const d=new Date(iso),t=new Date(),y=new Date();y.setDate(y.getDate()-1);
+  if(d.toDateString()===t.toDateString())return"Today";
+  if(d.toDateString()===y.toDateString())return"Yesterday";
+  return d.toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short"});
+}
+function timeSince(iso){
+  const m=Math.floor((Date.now()-new Date(iso).getTime())/60000);
+  if(m<60)return`${m}m ago`;const h=Math.floor(m/60);
+  if(h<24)return`${h}h ${m%60}m ago`;return`${Math.floor(h/24)}d ago`;
+}
+function shortDay(d){return["Sun","Mon","Tue","Wed","Thu","Fri","Sat"][d.getDay()]}
+
+function startNotifs(){
+  clearInterval(notifTimer);
+  if(typeof Notification==="undefined"||Notification.permission!=="granted")return;
+  notifTimer=setInterval(()=>{
+    new Notification("Becoming — Check In",{body:"What are you doing right now? How aligned are you?",tag:"becoming-checkin"});
+  },(settings.intervalHours||2)*3600000);
+}
+
+const app=document.getElementById("app");
+const navBtns=document.querySelectorAll(".nav button");
+navBtns.forEach(b=>b.addEventListener("click",()=>{currentView=b.dataset.view;render()}));
+
+function render(){
+  navBtns.forEach(b=>{b.classList.toggle("active",b.dataset.view===currentView)});
+  if(currentView==="home")renderHome();
+  else if(currentView==="checkin")renderCheckin();
+  else if(currentView==="insights")renderInsights();
+  else if(currentView==="history")renderHistory();
+  else if(currentView==="settings")renderSettings();
+}
+
+function renderHome(){
+  const today=entries.filter(e=>new Date(e.time).toDateString()===new Date().toDateString());
+  const avgM=today.length?(today.reduce((s,e)=>s+e.mood,0)/today.length).toFixed(1):"—";
+  const avgA=today.length?(today.reduce((s,e)=>s+e.alignment,0)/today.length).toFixed(1):"—";
+  const last=entries.length?timeSince(entries[0].time):"No check-ins yet";
+  const week=entries.filter(e=>Date.now()-new Date(e.time).getTime()<7*864e5);
+  const tc={};week.forEach(e=>e.tags.forEach(t=>{tc[t]=(tc[t]||0)+1}));
+  const top=Object.entries(tc).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const maxC=top.length?Math.max(...top.map(t=>t[1])):1;
+  const notifOk=("Notification" in window)&&Notification.permission==="granted";
+
+  app.innerHTML=`
+    <div class="header">
+      <div><h1>🌱 Becoming</h1><div class="subtitle">${last}</div></div>
+      ${notifOk?"":`<button class="btn btn-sm" onclick="requestNotif()">🔔 Alerts</button>`}
+    </div>
+    <div class="card">
+      <div style="font-size:12px;color:var(--muted);text-align:center;margin-bottom:8px">Today (${today.length} check-in${today.length!==1?"s":""})</div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-val" style="color:${avgM!=="—"?mcRaw(+avgM):"var(--muted)"}">${avgM}</div><div class="stat-label">Mood</div></div>
+        <div class="stat"><div class="stat-val" style="color:${avgA!=="—"?mcRaw(+avgA):"var(--muted)"}">${avgA}</div><div class="stat-label">Alignment</div></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="goCheckin()">✦ Check In Now</button>
+    ${top.length?`<div class="card" style="margin-top:12px">
+      <div style="font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px">This week</div>
+      ${top.map(([t,c])=>`<div class="bar-row"><div class="bar-name">${t}</div><div class="bar-bg"><div class="bar-fill" style="width:${(c/maxC*100)}%;background:var(--accent)"></div></div><div class="bar-count">${c}</div></div>`).join("")}
+    </div>`:""}
+  `;
+}
+
+function renderCheckin(){
+  app.innerHTML=`
+    <div class="back-row"><button class="back-btn" onclick="goHome()">←</button><div class="section-title">Check In</div></div>
+    <div class="card">
+      <label style="font-size:12px;font-weight:600;color:var(--muted);display:block;margin-bottom:6px">What are you doing?</label>
+      <input type="text" id="activity" placeholder="e.g. Practising chord progressions" value="${form.activity.replace(/"/g,'&quot;')}">
+      <div style="margin-top:12px;font-size:12px;font-weight:600;color:var(--muted)">Tags</div>
+      <div class="tags" id="tagpicker">
+        ${settings.tags.map(t=>`<span class="tag${form.tags.includes(t)?" active":""}" onclick="toggleFormTag('${t}')">${t}</span>`).join("")}
+      </div>
+    </div>
+    <div class="card">
+      <div class="range-wrap">
+        <div class="range-header"><span class="range-label">Mood</span><span class="range-value" id="mood-val" style="color:${mcRaw(form.mood)}">${form.mood}</span></div>
+        <input type="range" min="1" max="10" value="${form.mood}" id="mood-range" oninput="updateMood(this.value)">
+        <div class="range-labels"><span>Awful</span><span>Amazing</span></div>
+      </div>
+      <div class="range-wrap">
+        <div class="range-header"><span class="range-label">Ideal Self Alignment</span><span class="range-value" id="align-val" style="color:${mcRaw(form.alignment)}">${form.alignment}</span></div>
+        <input type="range" min="1" max="10" value="${form.alignment}" id="align-range" oninput="updateAlign(this.value)">
+        <div class="range-labels"><span>Not at all</span><span>Perfectly</span></div>
+      </div>
+    </div>
+    <button class="btn btn-primary" id="submit-btn" onclick="submitCheckin()" ${form.activity.trim()?"":"disabled"}>Save Check-In</button>
+  `;
+  const inp=document.getElementById("activity");
+  inp.addEventListener("input",e=>{form.activity=e.target.value;document.getElementById("submit-btn").disabled=!e.target.value.trim()});
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter"&&form.activity.trim())submitCheckin()});
+  inp.focus();
+}
+
+function renderInsights(){
+  // Get last 7 days
+  const days=[];
+  for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);d.setHours(0,0,0,0);days.push(d)}
+
+  const dayData=days.map(d=>{
+    const next=new Date(d);next.setDate(next.getDate()+1);
+    const de=entries.filter(e=>{const t=new Date(e.time);return t>=d&&t<next});
+    return{
+      date:d,
+      entries:de,
+      avgMood:de.length?(de.reduce((s,e)=>s+e.mood,0)/de.length):null,
+      avgAlign:de.length?(de.reduce((s,e)=>s+e.alignment,0)/de.length):null,
+      count:de.length
+    };
+  });
+
+  const weekEntries=entries.filter(e=>Date.now()-new Date(e.time).getTime()<7*864e5);
+  const weekAvgAlign=weekEntries.length?(weekEntries.reduce((s,e)=>s+e.alignment,0)/weekEntries.length):null;
+  const weekAvgMood=weekEntries.length?(weekEntries.reduce((s,e)=>s+e.mood,0)/weekEntries.length):null;
+
+  // Trend: compare last 3 days avg vs previous 4
+  const recent3=dayData.slice(4);
+  const prev4=dayData.slice(0,4);
+  const r3align=recent3.filter(d=>d.avgAlign!==null);
+  const p4align=prev4.filter(d=>d.avgAlign!==null);
+  const recentAvg=r3align.length?(r3align.reduce((s,d)=>s+d.avgAlign,0)/r3align.length):null;
+  const prevAvg=p4align.length?(p4align.reduce((s,d)=>s+d.avgAlign,0)/p4align.length):null;
+  let trendHtml="";
+  if(recentAvg!==null&&prevAvg!==null){
+    const diff=recentAvg-prevAvg;
+    if(Math.abs(diff)>0.3){
+      trendHtml=diff>0?`<span class="trend-arrow" style="color:var(--green)">↑</span>`:`<span class="trend-arrow" style="color:var(--red)">↓</span>`;
+    }else{
+      trendHtml=`<span class="trend-arrow" style="color:var(--muted)">→</span>`;
+    }
+  }
+
+  // Tag insights: count + avg alignment per tag
+  const tagStats={};
+  weekEntries.forEach(e=>{
+    e.tags.forEach(t=>{
+      if(!tagStats[t])tagStats[t]={count:0,totalAlign:0,totalMood:0};
+      tagStats[t].count++;
+      tagStats[t].totalAlign+=e.alignment;
+      tagStats[t].totalMood+=e.mood;
+    });
+  });
+  const tagList=Object.entries(tagStats).map(([name,s])=>({name,count:s.count,avgAlign:+(s.totalAlign/s.count).toFixed(1),avgMood:+(s.totalMood/s.count).toFixed(1)})).sort((a,b)=>b.count-a.count);
+  const maxTagCount=tagList.length?Math.max(...tagList.map(t=>t.count)):1;
+
+  // Best/worst alignment tags
+  const tagsByAlign=[...tagList].filter(t=>t.count>=2).sort((a,b)=>b.avgAlign-a.avgAlign);
+  const bestTag=tagsByAlign[0]||null;
+  const worstTag=tagsByAlign.length>1?tagsByAlign[tagsByAlign.length-1]:null;
+
+  // Streak: consecutive days with at least one check-in
+  let streak=0;
+  for(let i=dayData.length-1;i>=0;i--){
+    if(dayData[i].count>0)streak++;else break;
+  }
+
+  // SVG chart
+  const chartH=100,chartW=280;
+  const maxVal=10;
+  const barW=chartW/7;
+
+  function barSVG(){
+    let svg=`<svg viewBox="0 0 ${chartW} ${chartH+20}" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto">`;
+    // Grid lines
+    for(let i=0;i<=10;i+=5){
+      const y=chartH-(i/maxVal)*chartH;
+      svg+=`<line x1="0" y1="${y}" x2="${chartW}" y2="${y}" stroke="var(--border)" stroke-width="0.5" stroke-dasharray="3,3"/>`;
+      svg+=`<text x="-2" y="${y+3}" fill="var(--muted)" font-size="8" text-anchor="end">${i}</text>`;
+    }
+    dayData.forEach((d,i)=>{
+      const x=i*barW;
+      const bw=barW*0.35;
+      const gap=2;
+      if(d.avgMood!==null){
+        const mh=(d.avgMood/maxVal)*chartH;
+        svg+=`<rect x="${x+barW/2-bw-gap/2}" y="${chartH-mh}" width="${bw}" height="${mh}" rx="3" fill="#818cf8" opacity="0.5"/>`;
+      }
+      if(d.avgAlign!==null){
+        const ah=(d.avgAlign/maxVal)*chartH;
+        svg+=`<rect x="${x+barW/2+gap/2}" y="${chartH-ah}" width="${bw}" height="${ah}" rx="3" fill="${mcRaw(d.avgAlign)}"/>`;
+      }
+      svg+=`<text x="${x+barW/2}" y="${chartH+14}" fill="var(--muted)" font-size="9" text-anchor="middle" font-weight="${i===6?'700':'400'}">${shortDay(d.date)}</text>`;
+    });
+    svg+=`</svg>`;
+    return svg;
+  }
+
+  // Alignment ring SVG
+  function ringSVG(val){
+    if(val===null)return`<div style="text-align:center;color:var(--muted);font-size:13px;padding:16px">No data this week</div>`;
+    const pct=val/10;
+    const r=50,stroke=10;
+    const circ=2*Math.PI*r;
+    const offset=circ*(1-pct);
+    const col=mcRaw(val);
+    return`<svg viewBox="0 0 130 130" style="width:130px;height:130px">
+      <circle cx="65" cy="65" r="${r}" fill="none" stroke="var(--border)" stroke-width="${stroke}"/>
+      <circle cx="65" cy="65" r="${r}" fill="none" stroke="${col}" stroke-width="${stroke}" stroke-linecap="round"
+        stroke-dasharray="${circ}" stroke-dashoffset="${offset}" transform="rotate(-90 65 65)" style="transition:stroke-dashoffset .6s"/>
+      <text x="65" y="60" text-anchor="middle" fill="var(--text)" font-size="28" font-weight="800">${val.toFixed(1)}</text>
+      <text x="65" y="78" text-anchor="middle" fill="var(--muted)" font-size="10">/ 10</text>
+    </svg>`;
+  }
+
+  app.innerHTML=`
+    <div style="padding-top:16px"><div class="section-title" style="margin-bottom:16px">Insights</div></div>
+
+    <div class="card" style="text-align:center">
+      <div class="insight-header">Weekly Alignment ${trendHtml}</div>
+      <div class="ring-container">${ringSVG(weekAvgAlign)}</div>
+      <div style="font-size:12px;color:var(--muted)">
+        ${weekAvgAlign!==null?
+          (weekAvgAlign>=7.5?"You're living close to your ideal self this week":
+           weekAvgAlign>=5?"Room to grow — you're in the middle ground":
+           "A tough week — be gentle with yourself"):
+          "Start checking in to see your alignment"}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="insight-header">Daily Breakdown</div>
+      <div style="padding:4px 8px">${barSVG()}</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#818cf8;opacity:.5"></div>Mood</div>
+        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>Alignment</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="insight-header">Where Your Time Goes</div>
+      ${tagList.length===0?`<div style="color:var(--muted);font-size:13px">No tagged check-ins yet</div>`:""}
+      ${tagList.map(t=>{
+        const pct=(t.count/maxTagCount*100);
+        return`<div class="tag-insight-row">
+          <div class="tag-insight-name">${t.name}</div>
+          <div class="tag-insight-bar-bg"><div class="tag-insight-bar" style="width:${pct}%;background:${mcRaw(t.avgAlign)}"></div></div>
+          <div class="tag-insight-meta">${t.count}× · <span style="color:${mcRaw(t.avgAlign)};font-weight:600">${t.avgAlign}</span> align</div>
+        </div>`;
+      }).join("")}
+    </div>
+
+    ${bestTag||worstTag?`<div class="card">
+      <div class="insight-header">Alignment by Activity</div>
+      <div style="font-size:13px;line-height:1.7">
+        ${bestTag?`<div>Most aligned: <strong style="color:var(--green)">${bestTag.name}</strong> (avg ${bestTag.avgAlign}/10)</div>`:""}
+        ${worstTag&&worstTag.name!==bestTag?.name?`<div>Least aligned: <strong style="color:var(--red)">${worstTag.name}</strong> (avg ${worstTag.avgAlign}/10)</div>`:""}
+      </div>
+    </div>`:""}
+
+    <div class="card">
+      <div class="insight-duo">
+        <div>
+          <div class="insight-big" style="color:var(--accent)">${streak}</div>
+          <div class="insight-sub">day streak</div>
+        </div>
+        <div>
+          <div class="insight-big" style="color:var(--accent)">${weekEntries.length}</div>
+          <div class="insight-sub">check-ins this week</div>
+        </div>
+      </div>
+      <div class="streak-row">
+        ${dayData.map(d=>`<div class="streak-dot" title="${shortDay(d.date)}: ${d.count} check-ins" style="background:${d.count>0?'var(--accent)':'var(--border)'};opacity:${d.count>0?Math.min(0.4+d.count*0.2,1):.3}"></div>`).join("")}
+      </div>
+      <div style="text-align:center;font-size:10px;color:var(--muted);margin-top:2px">${dayData.map(d=>shortDay(d.date)).join("  ")}</div>
+    </div>
+
+    ${weekAvgMood!==null?`<div class="card">
+      <div class="insight-header">Weekly Averages</div>
+      <div class="stat-row">
+        <div class="stat"><div class="stat-val" style="color:${mcRaw(weekAvgMood)}">${weekAvgMood.toFixed(1)}</div><div class="stat-label">Avg Mood</div></div>
+        <div class="stat"><div class="stat-val" style="color:${mcRaw(weekAvgAlign)}">${weekAvgAlign.toFixed(1)}</div><div class="stat-label">Avg Alignment</div></div>
+      </div>
+    </div>`:""}
+  `;
+}
+
+function renderHistory(){
+  const grouped={};
+  entries.forEach(e=>{const d=dayLabel(e.time);if(!grouped[d])grouped[d]=[];grouped[d].push(e)});
+  app.innerHTML=`
+    <div style="padding-top:16px"><div class="section-title" style="margin-bottom:4px">History</div></div>
+    ${entries.length===0?`<div class="empty">No check-ins yet</div>`:""}
+    ${Object.entries(grouped).map(([day,items])=>`
+      <div class="day-label">${day}</div>
+      ${items.map(e=>`
+        <div class="card"><div class="entry">
+          <div class="entry-main">
+            <div class="entry-activity">${esc(e.activity)}</div>
+            <div class="entry-time">${fmtTime(e.time)}</div>
+            ${e.tags.length?`<div class="entry-tags">${e.tags.map(t=>`<span>${t}</span>`).join("")}</div>`:""}
+          </div>
+          <div class="entry-scores">
+            <div class="score"><div class="score-val" style="color:${mcRaw(e.mood)}">${e.mood}</div><div class="score-label">mood</div></div>
+            <div class="score"><div class="score-val" style="color:${mcRaw(e.alignment)}">${e.alignment}</div><div class="score-label">align</div></div>
+            <button class="del-btn" onclick="deleteEntry(${e.id})">✕</button>
+          </div>
+        </div></div>
+      `).join("")}
+    `).join("")}
+  `;
+}
+
+function renderSettings(){
+  const notifOk=("Notification" in window)&&Notification.permission==="granted";
+  app.innerHTML=`
+    <div style="padding-top:16px"><div class="section-title" style="margin-bottom:12px">Settings</div></div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:10px">Check-in interval</div>
+      <div class="interval-btns">
+        ${[1,1.5,2,3,4].map(h=>`<button class="interval-btn${settings.intervalHours===h?" active":""}" onclick="setInterval2(${h})">${h}h</button>`).join("")}
+      </div>
+      <div class="notif-status">${notifOk?"🔔 Notifications active":"⚠️ Tap 'Alerts' on home to enable"}</div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600;margin-bottom:8px">Tags</div>
+      <div class="settings-tags">
+        ${settings.tags.map(t=>`<span class="settings-tag">${t}<button onclick="removeSettingsTag('${t}')">✕</button></span>`).join("")}
+      </div>
+      <div class="add-row">
+        <input type="text" id="new-tag" placeholder="Add tag...">
+        <button onclick="addTag()">+</button>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-size:13px;font-weight:600">Data</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">${entries.length} total check-ins</div>
+      <button class="btn btn-sm" style="margin-top:8px" onclick="exportCSV()">📥 Export CSV</button>
+      ${entries.length?`<button class="danger-btn" onclick="clearAll()">Clear all data</button>`:""}
+    </div>
+  `;
+  const tagInp=document.getElementById("new-tag");
+  if(tagInp)tagInp.addEventListener("keydown",e=>{if(e.key==="Enter")addTag()});
+}
+
+// Actions
+function goCheckin(){currentView="checkin";render()}
+function goHome(){currentView="home";render()}
+function toggleFormTag(t){const i=form.tags.indexOf(t);if(i===-1)form.tags.push(t);else form.tags.splice(i,1);render()}
+function updateMood(v){form.mood=+v;document.getElementById("mood-val").textContent=v;document.getElementById("mood-val").style.color=mcRaw(+v)}
+function updateAlign(v){form.alignment=+v;document.getElementById("align-val").textContent=v;document.getElementById("align-val").style.color=mcRaw(+v)}
+
+function submitCheckin(){
+  if(!form.activity.trim())return;
+  entries.unshift({id:Date.now(),time:new Date().toISOString(),activity:form.activity.trim(),mood:form.mood,alignment:form.alignment,tags:[...form.tags]});
+  save();form={activity:"",mood:5,alignment:5,tags:[]};currentView="home";render();
+}
+function deleteEntry(id){entries=entries.filter(e=>e.id!==id);save();render()}
+function setInterval2(h){settings.intervalHours=h;saveS();startNotifs();render()}
+function removeSettingsTag(t){settings.tags=settings.tags.filter(x=>x!==t);saveS();render()}
+function addTag(){
+  const inp=document.getElementById("new-tag");const t=inp.value.trim().toLowerCase();
+  if(!t||settings.tags.includes(t))return;settings.tags.push(t);saveS();render();
+}
+function clearAll(){if(confirm("Delete all check-ins? This cannot be undone.")){entries=[];save();render()}}
+function exportCSV(){
+  const rows=[["time","activity","mood","alignment","tags"]];
+  entries.forEach(e=>rows.push([e.time,`"${e.activity.replace(/"/g,'""')}"`,e.mood,e.alignment,`"${e.tags.join(", ")}"`]));
+  const blob=new Blob([rows.map(r=>r.join(",")).join("\n")],{type:"text/csv"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="becoming_export.csv";a.click();
+}
+function requestNotif(){
+  if(!("Notification" in window)){alert("Notifications not supported");return}
+  Notification.requestPermission().then(p=>{if(p==="granted")startNotifs();render()});
+}
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML}
+
+startNotifs();render();
+setInterval(()=>{if(currentView==="home")render()},60000);
+if("serviceWorker" in navigator){navigator.serviceWorker.register("/sw.js").then(()=>console.log("SW registered")).catch(e=>console.log("SW failed:",e))}
+</script>
+</body>
+</html>
